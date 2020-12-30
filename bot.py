@@ -90,7 +90,7 @@ def new_game(bot, update):
         game.owner.append(update.message.from_user.id)
         game.mode = DEFAULT_GAMEMODE
         send_async(bot, chat_id,
-                   text="Naya game shuru hua frandz! Join karna toh /join "
+                   text="Aajao bihariyo!! Join karna toh /join "
                           "shuru karne k liye /start")
 
 
@@ -107,7 +107,7 @@ def kill_game(bot, update):
 
     if not games:
             send_async(bot, chat.id,
-                       text="Game hi chalu nahi :|")
+                       text="Abe Bihari Game hi chalu nahi :|")
             return
 
     game = games[-1]
@@ -116,11 +116,11 @@ def kill_game(bot, update):
 
         try:
             gm.end_game(chat, user)
-            send_async(bot, chat.id, text=__("Game ended!", multi=game.translate))
+            send_async(bot, chat.id, text=__("chalo hogaya aaj ka, back to bihar.", multi=game.translate))
 
         except NoGameInChatError:
             send_async(bot, chat.id,
-                       text=_("The game is not started yet. "
+                       text=_("Kardi na bihari wali baat "
                               "Join the game with /join and start the game with /start"),
                        reply_to_message_id=update.message.message_id)
 
@@ -143,18 +143,17 @@ def join_game(bot, update):
         gm.join_game(update.message.from_user, chat)
 
     except LobbyClosedError:
-            send_async(bot, chat.id, text="Gand maara madarjaat", reply_to_message_id=update.message.message_id)
+            send_async(bot, chat.id, text="Abe bhag bihari", reply_to_message_id=update.message.message_id)
 
     except NoGameInChatError:
         send_async(bot, chat.id,
-                   text=_("No game is running at the moment. "
-                          "Create a new game with /new"),
+                   text=_("kardi jatin bihari pruthi wali baat "
+                          "Naya game bana /new"),
                    reply_to_message_id=update.message.message_id)
 
     except AlreadyJoinedError:
         send_async(bot, chat.id,
-                   text=_("You already joined the game. Start the game "
-                          "with /start"),
+                   text=_("kardi bihari wali baat, start kar aise /start"),
                    reply_to_message_id=update.message.message_id)
 
     except DeckEmptyError:
@@ -165,7 +164,7 @@ def join_game(bot, update):
 
     else:
         send_async(bot, chat.id,
-                   text=_("Joined the game"),
+                   text=_("Has entered bihar"),
                    reply_to_message_id=update.message.message_id)
 
 
@@ -196,17 +195,17 @@ def leave_game(bot, update):
 
     except NotEnoughPlayersError:
         gm.end_game(chat, user)
-        send_async(bot, chat.id, text=__("Game ended!", multi=game.translate))
+        send_async(bot, chat.id, text=__("chalo hogaya aaj ka, back to bihar.", multi=game.translate))
 
     else:
         if game.started:
             send_async(bot, chat.id,
-                       text="Pussy. Next Player: {name}".format(
+                       text="Katai Bihari. Next Player: {name}".format(
                            name=display_name(game.current_player.user)),
                        reply_to_message_id=update.message.message_id)
         else:
             send_async(bot, chat.id,
-                       text=__("{name} left the game before it started.",
+                       text=__("{name} bihar laut gaye.",
                                multi=game.translate).format(
                            name=display_name(user)),
                        reply_to_message_id=update.message.message_id)
@@ -228,15 +227,14 @@ def kick_player(bot, update):
 
     except (KeyError, IndexError):
             send_async(bot, chat.id,
-                   text=_("No game is running at the moment. "
-                          "Create a new game with /new"),
+                   text=_("kardi jatin bihari pruthi wali baat "
+                          "Naya game bana /new "),
                    reply_to_message_id=update.message.message_id)
             return
 
     if not game.started:
         send_async(bot, chat.id,
-                   text=_("The game is not started yet. "
-                          "Join the game with /join and start the game with /start"),
+                   text=_("kardi bihari wali baat, /join karke start kar aise /start "),
                    reply_to_message_id=update.message.message_id)
         return
 
@@ -257,11 +255,11 @@ def kick_player(bot, update):
                 gm.end_game(chat, user)
                 send_async(bot, chat.id,
                                 text=_("{0} was kicked by {1}".format(display_name(kicked), display_name(user))))
-                send_async(bot, chat.id, text=__("Game ended!", multi=game.translate))
+                send_async(bot, chat.id, text=__("chalo hogaya aaj ka, back to bihar.", multi=game.translate))
                 return
 
             send_async(bot, chat.id,
-                           text="{1} ne {0} ki gand mari".format(display_name(kicked), display_name(user)))
+                           text="{1} ne {0} ko bihar bhej diya".format(display_name(kicked), display_name(user)))
 
         else:
             send_async(bot, chat.id,
@@ -270,8 +268,8 @@ def kick_player(bot, update):
             return
 
         send_async(bot, chat.id,
-                   text="Okay. Next Player: {name}".format(
-                       name=display_name(game.current_player.user)),
+                   text="Okay. Agla Bihari: {name}".format(
+                       name=display_name(me.current_player.user)),
                    reply_to_message_id=update.message.message_id)
 
     else:
@@ -335,10 +333,10 @@ def status_update(bot, update):
             pass
         except NotEnoughPlayersError:
             gm.end_game(chat, user)
-            send_async(bot, chat.id, text=__("Game ended!",
+            send_async(bot, chat.id, text=__("chalo hogaya aaj ka, back to bihar.",
                                              multi=game.translate))
         else:
-            send_async(bot, chat.id, text=__("Removing {name} from the game",
+            send_async(bot, chat.id, text=__("{name} bihari ko nikalo bc",
                                              multi=game.translate)
                        .format(name=display_name(user)))
 
@@ -360,7 +358,7 @@ def start_game(bot, update, args, job_queue):
             return
 
         if game.started:
-            send_async(bot, chat.id, text=_("The game has already started"))
+            send_async(bot, chat.id, text=_("Tere bina shuru kardi game bihari"))
 
         elif len(game.players) < MIN_PLAYERS:
             send_async(bot, chat.id,
@@ -375,7 +373,7 @@ def start_game(bot, update, args, job_queue):
                 player.draw_first_hand()
             choice = [[InlineKeyboardButton(text=_("Make your choice!"), switch_inline_query_current_chat='')]]
             first_message = (
-                __("First player: {name}\n"
+                __("Pehle Bihari: {name}\n"
                    "Use /close to stop people from joining the game.\n"
                    "Enable multi-translations with /enable_translations",
                    multi=game.translate)
@@ -429,7 +427,7 @@ def close_game(bot, update):
 
     if not games:
         send_async(bot, chat.id,
-                   text=_("There is no running game in this chat."))
+                   text=_("Bihari game toh chalu kar"))
         return
 
     game = games[-1]
@@ -457,7 +455,7 @@ def open_game(bot, update):
 
     if not games:
         send_async(bot, chat.id,
-                   text=_("There is no running game in this chat."))
+                   text=_("Bihari game toh chalu kar"))
         return
 
     game = games[-1]
@@ -484,7 +482,7 @@ def enable_translations(bot, update):
 
     if not games:
         send_async(bot, chat.id,
-                   text=_("There is no running game in this chat."))
+                   text=_("Bihari game toh chalu kar"))
         return
 
     game = games[-1]
@@ -512,7 +510,7 @@ def disable_translations(bot, update):
 
     if not games:
         send_async(bot, chat.id,
-                   text=_("There is no running game in this chat."))
+                   text=_("Bihari game toh chalu kar"))
         return
 
     game = games[-1]
@@ -694,7 +692,7 @@ def process_result(bot, update, job_queue):
 
     if game_is_running(game):
         nextplayer_message = (
-            __("Agla chu: {name}", multi=game.translate)
+            __("Agla bihari: {name}", multi=game.translate)
             .format(name=display_name(game.current_player.user)))
         choice = [[InlineKeyboardButton(text=_("Make your choice!"), switch_inline_query_current_chat='')]]
         send_async(bot, chat.id,

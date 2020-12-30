@@ -46,8 +46,8 @@ def do_skip(bot, player, job_queue=None):
         n = skipped_player.waiting_time
         send_async(bot, chat.id,
                    text=__("Ye khiladi {time} seconds ke"
-                        "liye hilane gaya hain\n"
-                        "Agla chu: {name}", multi=game.translate)
+                        "liye bihar gaya hain\n"
+                        "Agla bihari: {name}", multi=game.translate)
                    .format(time=n,
                            name=display_name(next_player.user))
         )
@@ -61,9 +61,9 @@ def do_skip(bot, player, job_queue=None):
         try:
             gm.leave_game(skipped_player.user, chat)
             send_async(bot, chat.id,
-                       text=__("{name1} ran out of time "
-                            "and has been removed from the game!\n"
-                            "Next player: {name2}", multi=game.translate)
+                       text=__("{name1} ka bihar jaane ka waqt ho gaya "
+                            "and usko pakad ke le gaye\n"
+                            "Agla Bihari: {name2}", multi=game.translate)
                        .format(name1=display_name(skipped_player.user),
                                name2=display_name(next_player.user)))
             logger.info("{player} was skipped! "
@@ -73,9 +73,9 @@ def do_skip(bot, player, job_queue=None):
 
         except NotEnoughPlayersError:
             send_async(bot, chat.id,
-                       text=__("{name} ran out of time "
-                               "and has been removed from the game!\n"
-                               "The game ended.", multi=game.translate)
+                       text=__("{name} ka bihar jaane ka waqt ho gaya "
+                               "and usko pakad ke le gaye\n"
+                               "Game khatam.", multi=game.translate)
                        .format(name=display_name(skipped_player.user)))
 
             gm.end_game(chat, skipped_player.user)
@@ -116,11 +116,11 @@ def do_play_card(bot, player, result_id):
         send_async(bot, chat.id, text="Dukaan soonTM")
 
     if len(player.cards) == 1:
-        send_async(bot, chat.id, text="UNO | Is chutiye ka ek hi card bach gaya, maro!")
+        send_async(bot, chat.id, text="UNO | Is bihari ka ek hi card bach gaya, maro!")
 
     if len(player.cards) == 0:
         send_async(bot, chat.id,
-                   text=__("{name} jeet gaya bc!", multi=game.translate)
+                   text=__("{name} bihari ban gaya bc!", multi=game.translate)
                    .format(name=user.first_name))
 
         if us.stats:
@@ -135,7 +135,7 @@ def do_play_card(bot, player, result_id):
             gm.leave_game(user, chat)
         except NotEnoughPlayersError:
             send_async(bot, chat.id,
-                       text=__("Game ended!", multi=game.translate))
+                       text=__("chalo hogaya aaj ka, back to bihar.", multi=game.translate))
 
             us2 = UserSetting.get(id=game.current_player.user.id)
             if us2 and us2.stats:
@@ -169,7 +169,7 @@ def do_call_bluff(bot, player):
 
     if player.prev.bluffing:
         send_async(bot, chat.id,
-                   text="{name} ne gaand di! Giving 4 cards".format(name=player.prev.user.first_name))
+                   text="bihari {name} ne gaand di! Giving 4 cards".format(name=player.prev.user.first_name))
 
         try:
             player.prev.draw()
@@ -181,7 +181,7 @@ def do_call_bluff(bot, player):
     else:
         game.draw_counter += 2
         send_async(bot, chat.id,
-                   text="{name1} ne gaand nahi di, ab {name2} ki gaand marega. Dukaan ka investment lelo".format(name1=player.prev.user.first_name,name2=player.user.first_name))
+                   text="{name1} ne gaand nahi di,{name2} bhaiya tum bihar hi raho".format(name1=player.prev.user.first_name,name2=player.user.first_name))
         try:
             player.draw()
         except DeckEmptyError:
